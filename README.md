@@ -3,3 +3,4 @@ Integrantes:
 * Adrián Mesías Huatuco (u202421946)
 * Jhoyner Arnold Calampa Bardales (u202117290)
 * Cristian Marcelo Magallanes Arias (u202423870)
+* Omar Estefano Gonzales Rios (u202423014)
