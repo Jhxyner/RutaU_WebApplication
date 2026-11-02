@@ -1,0 +1,6 @@
+.head { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin: 16px 0; }
+.trip { padding: 16px; cursor: pointer; display: flex; flex-direction: column; gap: 4px; }
+.trip.sel { outline: 2px solid currentColor; }
+.detail { padding: 16px; margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+.sel { font-weight: bold; }

@@ -1,0 +1,39 @@
+<div class="head">
+  <mat-form-field appearance="outline">
+    <mat-label>Buscar destino</mat-label>
+    <input matInput (input)="onSearch($event)" placeholder="Ej. UPC Monterrico" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Precio máximo (S/)</mat-label>
+    <input matInput type="number" [(ngModel)]="maxPrice" />
+  </mat-form-field>
+  <button mat-stroked-button (click)="applyFilters()">Filtrar</button>
+</div>
+
+<div class="grid">
+  @for (t of paged(); track t.id) {
+    <mat-card class="trip" [class.sel]="selected()?.id === t.id" (click)="open(t)">
+      <strong>{{ t.origin }} → {{ t.destination }}</strong>
+      <span>{{ fmtDate(t.departureTime) }} · {{ fmtTime(t.departureTime) }}</span>
+      <span>{{ t.availableSeats }} asientos · S/ {{ t.pricePerSeat }}</span>
+      <span>Conductor: {{ t.driverName }}</span>
+    </mat-card>
+  } @empty {
+    <p class="empty">No se encontraron viajes.</p>
+  }
+</div>
+
+<mat-paginator [length]="total()" [pageSize]="pageSize" [pageIndex]="pageIndex()" (page)="onPage($event)" />
+
+@if (selected(); as t) {
+  <mat-card class="detail">
+    <h2>{{ t.origin }} → {{ t.destination }}</h2>
+    <h3>Punto de recojo</h3>
+    @for (s of stops(); track s.id) {
+      <button mat-stroked-button [class.sel]="activeStop() === s.id" (click)="pick(s)">{{ s.address }}</button>
+    } @empty {
+      <p class="empty">Este viaje no tiene puntos intermedios; se usará el origen.</p>
+    }
+    <button mat-flat-button [disabled]="full()" (click)="book()">Solicitar asiento</button>
+  </mat-card>
+}
