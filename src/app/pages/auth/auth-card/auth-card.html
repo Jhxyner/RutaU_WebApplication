@@ -1,0 +1,10 @@
+<div class="auth-wrap">
+  <mat-card class="auth-card">
+    <h1>{{ title() }}</h1>
+    <form [formGroup]="form()" (ngSubmit)="submitForm.emit()">
+      <ng-content />
+      <button mat-flat-button type="submit" [disabled]="loading()">{{ submitLabel() }}</button>
+    </form>
+    <ng-content select="[footer]" />
+  </mat-card>
+</div>
