@@ -1,0 +1,22 @@
+<mat-card class="box">
+  <h1>Publicar viaje</h1>
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <mat-form-field><mat-label>Origen</mat-label><input matInput formControlName="origin" /></mat-form-field>
+    <mat-form-field><mat-label>Destino</mat-label><input matInput formControlName="destination" /></mat-form-field>
+      <mat-form-field><mat-label>Zona</mat-label><input matInput formControlName="zone" /></mat-form-field>
+  <mat-form-field><mat-label>Fecha y hora</mat-label><input matInput type="datetime-local" formControlName="departureTime" /></mat-form-field>
+    <mat-form-field><mat-label>Asientos</mat-label><input matInput type="number" formControlName="seats" /></mat-form-field>
+    <mat-form-field><mat-label>Precio por asiento (S/)</mat-label><input matInput type="number" formControlName="pricePerSeat" /></mat-form-field>
+    <button mat-flat-button type="submit">Publicar</button>
+  </form>
+</mat-card>
+
+<h2>Mis viajes</h2>
+@for (t of trips(); track t.id) {
+  <mat-card class="row">
+    <span>{{ t.origin }} → {{ t.destination }} · {{ t.departureTime.slice(0, 16).replace('T', ' ') }} · {{ t.availableSeats }} asientos</span>
+    <button mat-button (click)="remove(t)">Cancelar viaje</button>
+  </mat-card>
+} @empty {
+  <p>Aún no has publicado viajes.</p>
+}
