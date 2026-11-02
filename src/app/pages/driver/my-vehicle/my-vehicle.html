@@ -1,1 +1,24 @@
-<p>my-vehicle works!</p>
+<mat-card class="box">
+  <h1>Mi vehículo</h1>
+
+  @if (vehicle(); as v) {
+    <p>{{ v.brand }} {{ v.model }} · {{ v.color }} · {{ v.plate }} · {{ v.capacity }} asientos</p>
+    @if (editingId() === null) {
+      <button mat-stroked-button (click)="edit(v)">Editar</button>
+    }
+  }
+
+  @if (!vehicle() || editingId() !== null) {
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <mat-form-field><mat-label>Marca</mat-label><input matInput formControlName="brand" /></mat-form-field>
+      <mat-form-field><mat-label>Modelo</mat-label><input matInput formControlName="model" /></mat-form-field>
+      <mat-form-field><mat-label>Color</mat-label><input matInput formControlName="color" /></mat-form-field>
+      <mat-form-field><mat-label>Placa</mat-label><input matInput formControlName="plate" /></mat-form-field>
+      <mat-form-field><mat-label>Asientos para pasajeros</mat-label><input matInput type="number" formControlName="capacity" /></mat-form-field>
+      <button mat-flat-button type="submit">{{ editingId() ? 'Guardar cambios' : 'Registrar vehículo' }}</button>
+      @if (editingId() !== null) {
+        <button mat-button type="button" (click)="cancel()">Cancelar</button>
+      }
+    </form>
+  }
+</mat-card>
