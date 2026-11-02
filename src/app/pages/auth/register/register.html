@@ -1,0 +1,35 @@
+<app-auth-card
+  title="Crear cuenta"
+  submitLabel="Registrarme"
+  [form]="form"
+  [loading]="loading()"
+  (submitForm)="submit()">
+  <ng-container [formGroup]="form">
+    <mat-form-field>
+      <mat-label>Nombre completo</mat-label>
+      <input matInput formControlName="fullName" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Usuario</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Correo institucional</mat-label>
+      <input matInput type="email" formControlName="email" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Contraseña</mat-label>
+      <input matInput type="password" formControlName="password" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Universidad</mat-label>
+      <input matInput formControlName="university" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Distrito</mat-label>
+      <input matInput formControlName="district" />
+    </mat-form-field>
+    <mat-checkbox formControlName="acceptTerms">Acepto los Términos de Servicio</mat-checkbox>
+  </ng-container>
+  <p class="alt" footer>¿Ya tienes cuenta? <a routerLink="/login">Iniciar sesión</a></p>
+</app-auth-card>
