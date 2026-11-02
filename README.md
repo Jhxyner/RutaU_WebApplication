@@ -1,59 +1,25 @@
-# RutauWeb
+# RutaU – Web Application
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.5.
+Interfaz web de RutaU (carpooling universitario), hecha con Angular 22 y Angular Material.
+Consume los Web Services de https://github.com/AdrianRMH89/RutaU_Api
 
-## Development server
+## Requisitos
+- Node.js LTS y Angular CLI (`npm install -g @angular/cli`)
+- RutaU_Api corriendo en http://localhost:8081 (con CORS habilitado para http://localhost:4200)
 
-To start a local development server, run:
+## Cómo ejecutarla
+    npm install
+    ng serve
+Abrir http://localhost:4200
 
-```bash
-ng serve
-```
+## Estructura
+- `src/app/core/`: modelos, servicios, guard e interceptor
+- `src/app/pages/auth/`: login, registro y AuthCard
+- `src/app/pages/passenger/`: buscar viajes
+- `src/app/pages/driver/`: mi vehículo y publicar viaje
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Flujo de trabajo (GitFlow)
+- Ramas permanentes: `main` y `develop`.
+- Cada User Story va en `feature/USxx-descripcion` creada desde `develop`.
+- Todo se integra con Pull Request revisado por otro integrante.
+- Commits con Conventional Commits y versionado SemVer.
