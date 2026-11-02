@@ -1,0 +1,2 @@
+.box { max-width: 480px; margin: 0 auto; padding: 24px; }
+form { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
