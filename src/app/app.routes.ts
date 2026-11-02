@@ -10,5 +10,10 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () => import('./pages/passenger/browse/browse').then((m) => m.Browse),
   },
+  {
+  path: 'conductor/publicar',
+  canActivate: [authGuard],
+  loadComponent: () => import('./pages/driver/publish-trip/publish-trip').then((m) => m.PublishTrip),
+  },
   { path: '**', redirectTo: 'viajes' },
 ];
