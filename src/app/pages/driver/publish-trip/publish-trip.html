@@ -1,22 +1,118 @@
-<mat-card class="box">
-  <h1>Publicar viaje</h1>
-  <form [formGroup]="form" (ngSubmit)="save()">
-    <mat-form-field><mat-label>Origen</mat-label><input matInput formControlName="origin" /></mat-form-field>
-    <mat-form-field><mat-label>Destino</mat-label><input matInput formControlName="destination" /></mat-form-field>
-      <mat-form-field><mat-label>Zona</mat-label><input matInput formControlName="zone" /></mat-form-field>
-  <mat-form-field><mat-label>Fecha y hora</mat-label><input matInput type="datetime-local" formControlName="departureTime" /></mat-form-field>
-    <mat-form-field><mat-label>Asientos</mat-label><input matInput type="number" formControlName="seats" /></mat-form-field>
-    <mat-form-field><mat-label>Precio por asiento (S/)</mat-label><input matInput type="number" formControlName="pricePerSeat" /></mat-form-field>
-    <button mat-flat-button type="submit">Publicar</button>
-  </form>
-</mat-card>
+<h1>{{ 'Publicar viaje' | t }}</h1>
+<p class="sub">{{ 'Comparte tu ruta y ayuda a otros estudiantes.' | t }}</p>
 
-<h2>Mis viajes</h2>
-@for (t of trips(); track t.id) {
-  <mat-card class="row">
-    <span>{{ t.origin }} → {{ t.destination }} · {{ t.departureTime.slice(0, 16).replace('T', ' ') }} · {{ t.availableSeats }} asientos</span>
-    <button mat-button (click)="remove(t)">Cancelar viaje</button>
-  </mat-card>
-} @empty {
-  <p>Aún no has publicado viajes.</p>
+@if (vehicleChecked() && !vehicle()) {
+  <div class="banner">
+    <mat-icon>info</mat-icon>
+    {{ 'Primero registra tu vehículo para poder publicar viajes.' | t }}
+    <a mat-flat-button routerLink="/conductor/vehiculo">{{ 'Registrar vehículo' | t }}</a>
+  </div>
 }
+
+<div class="cols">
+  <mat-card class="box">
+    <form [formGroup]="form" (ngSubmit)="publish()">
+      <h2>{{ 'Ruta' | t }}</h2>
+      <div class="row">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'Origen' | t }}</mat-label>
+          <input matInput formControlName="origin" />
+          @if (form.controls.origin.invalid) { <mat-error>{{ 'El origen es obligatorio' | t }}</mat-error> }
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'Destino' | t }}</mat-label>
+          <input matInput formControlName="destination" />
+          @if (form.controls.destination.invalid) { <mat-error>{{ 'El destino es obligatorio' | t }}</mat-error> }
+        </mat-form-field>
+      </div>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'Zona / distrito de salida' | t }}</mat-label>
+        <input matInput formControlName="zone" [placeholder]="'Ej. Surco' | t" />
+        @if (form.controls.zone.invalid) { <mat-error>{{ 'La zona es obligatoria' | t }}</mat-error> }
+      </mat-form-field>
+
+      <h2>{{ 'Paradas intermedias' | t }}</h2>
+      @for (s of stops.controls; track s; let i = $index) {
+        <div class="stop" [formGroup]="s">
+          <span class="num">{{ i + 1 }}</span>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'Dirección' | t }}</mat-label>
+            <input matInput formControlName="address" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'Zona' | t }}</mat-label>
+            <input matInput formControlName="zone" />
+          </mat-form-field>
+          <button mat-icon-button type="button" [attr.aria-label]="'Quitar parada' | t" (click)="removeStop(i)"><mat-icon>close</mat-icon></button>
+        </div>
+      }
+      <button mat-stroked-button type="button" (click)="addStop()"><mat-icon>add</mat-icon> {{ 'Agregar parada' | t }}</button>
+
+      <h2>{{ 'Fecha y cupos' | t }}</h2>
+      <div class="row">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'Fecha' | t }}</mat-label>
+          <input matInput type="date" formControlName="date" [min]="today" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'Hora de salida' | t }}</mat-label>
+          <input matInput type="time" formControlName="time" />
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'Asientos disponibles' | t }}</mat-label>
+          <input matInput type="number" formControlName="seats" [max]="maxSeats()" />
+          @if (form.controls.seats.invalid) { <mat-error>{{ 'Entre 1 y' | t }} {{ maxSeats() }}</mat-error> }
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'Precio por asiento (S/)' | t }}</mat-label>
+          <input matInput type="number" step="0.5" formControlName="pricePerSeat" />
+          @if (form.controls.pricePerSeat.invalid) { <mat-error>{{ 'Indica un precio válido' | t }}</mat-error> }
+        </mat-form-field>
+      </div>
+
+      @if (vehicle(); as v) {
+        <p class="car"><mat-icon>directions_car</mat-icon> {{ v.brand }} {{ v.model }} · {{ v.plate }} · {{ v.capacity }} {{ 'asientos' | t }}</p>
+      }
+
+      <div class="actions">
+        <a mat-stroked-button routerLink="/conductor/viajes">{{ 'Cancelar' | t }}</a>
+        <button mat-flat-button type="submit" [disabled]="saving() || !vehicle()">{{ 'Publicar viaje' | t }}</button>
+      </div>
+    </form>
+  </mat-card>
+
+  <div class="stack">
+    <mat-card class="box">
+      <h2>{{ 'Resumen' | t }}</h2>
+      <dl class="sum">
+        <dt>{{ 'Ruta' | t }}</dt><dd>{{ draft().origin || '—' }} → {{ draft().destination || '—' }}</dd>
+        <dt>{{ 'Salida' | t }}</dt><dd>{{ draft().date || '—' }} {{ draft().time }}</dd>
+        <dt>{{ 'Asientos' | t }}</dt><dd>{{ draft().seats }}</dd>
+        <dt>{{ 'Precio' | t }}</dt><dd>S/ {{ draft().pricePerSeat | number: '1.2-2' }}</dd>
+        <dt>{{ 'Paradas' | t }}</dt><dd>{{ draft().stops.length }}</dd>
+      </dl>
+    </mat-card>
+
+    <mat-card class="box">
+      <h2>{{ 'Demanda por horario' | t }}</h2>
+      @if (comparison(); as c) {
+        @if (!c.enoughData) {
+          <p class="hint">{{ c.message }}</p>
+        } @else {
+          @for (s of c.slots; track s.hour) {
+            <div class="bar-row">
+              <span class="h">{{ s.label }}</span>
+              <div class="bar"><i [style.width.%]="pct(s.seatRequests)"></i></div>
+              <span class="n">{{ s.seatRequests }}</span>
+              @if (s.opportunity) { <span class="reco">{{ 'Recomendado' | t }}</span> }
+            </div>
+          }
+        }
+      } @else {
+        <p class="hint">{{ 'Sin datos de demanda por ahora.' | t }}</p>
+      }
+    </mat-card>
+  </div>
+</div>
