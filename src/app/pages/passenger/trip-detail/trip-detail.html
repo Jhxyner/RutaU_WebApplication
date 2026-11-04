@@ -1,0 +1,90 @@
+@if (trip(); as t) {
+  <p class="crumbs"><a routerLink="/pasajero/viajes">{{ 'Buscar viajes' | t }}</a> › {{ t.origin }} › {{ t.destination }}</p>
+  <h1>{{ 'Detalle del viaje' | t }}</h1>
+
+  <div class="cols">
+    <div class="stack">
+      <mat-card class="box">
+        <div class="head">
+          <h2>{{ t.origin }} → {{ t.destination }}</h2>
+          <app-status-badge [status]="t.status" />
+        </div>
+
+        <ol class="timeline">
+          <li class="first"><b>{{ t.origin }}</b><small>{{ 'Salida ·' | t }} {{ fmtTime(t.departureTime) }}</small></li>
+          @for (s of stops(); track s.id) {
+            <li class="mid"><b>{{ 'Parada' | t }} {{ s.stopOrder }} · {{ s.address }}</b><small>{{ s.zone }}</small></li>
+          }
+          <li class="last"><b>{{ t.destination }}</b><small>{{ 'Llegada' | t }}</small></li>
+        </ol>
+
+        <div class="tiles">
+          <div><small>{{ 'Fecha' | t }}</small><b>{{ fmtDate(t.departureTime) }} · {{ fmtTime(t.departureTime) }}</b></div>
+          <div><small>{{ 'Asientos libres' | t }}</small><b>{{ t.availableSeats }} {{ 'de' | t }} {{ t.totalSeats }}</b></div>
+          <div><small>{{ 'Precio por asiento' | t }}</small><b>S/ {{ t.pricePerSeat | number: '1.2-2' }}</b></div>
+        </div>
+      </mat-card>
+
+      @if (!isOwner()) {
+        <mat-card class="box">
+          <h2>{{ '¿Dónde subes?' | t }}</h2>
+          <div class="options">
+            <button type="button" class="opt" [class.sel]="pickup() === null" (click)="pick(null)">{{ 'Origen ·' | t }} {{ t.origin }}</button>
+            @for (s of stops(); track s.id) {
+              <button type="button" class="opt" [class.sel]="pickup() === s.id" (click)="pick(s.id)">{{ 'Parada' | t }} {{ s.stopOrder }} · {{ s.address }}</button>
+            }
+          </div>
+          <p class="hint">{{ 'Si no eliges un punto, el conductor te recoge en el origen.' | t }}</p>
+          <div class="actions">
+            <a mat-stroked-button routerLink="/pasajero/viajes">{{ 'Volver' | t }}</a>
+            <button mat-flat-button [disabled]="!canRequest() || sending()" (click)="request()">
+              {{ requested() ? ('Solicitud enviada' | t) : ('Solicitar asiento · S/ ' | t) + (t.pricePerSeat | number: '1.2-2') }}
+            </button>
+          </div>
+        </mat-card>
+      } @else {
+        <div class="banner"><mat-icon>info</mat-icon> {{ 'Este es tu viaje. Gestiona las solicitudes desde «Mis viajes».' | t }}</div>
+      }
+    </div>
+
+    <mat-card class="box side">
+      <div class="who">
+        <span class="avatar big">{{ driverInitials() }}</span>
+        <div>
+          <h2>{{ t.driverName }}</h2>
+          @if (profile(); as p) {
+            <small>★ {{ p.ratingLabel }} · {{ p.totalRatings }} {{ 'calificaciones' | t }}</small>
+          }
+        </div>
+      </div>
+
+      @if (profile(); as p) {
+        <span class="verified">{{ 'Estudiante' | t }} {{ p.university }} {{ 'verificada · .edu.pe' | t }}</span>
+        <div class="tiles two">
+          <div><b class="big">{{ p.completedTrips }}</b><small>{{ 'viajes realizados' | t }}</small></div>
+          <div><b class="big">{{ p.totalRatings }}</b><small>{{ 'calificaciones' | t }}</small></div>
+        </div>
+      }
+      <p class="car">{{ t.vehicleBrand }} {{ t.vehicleModel }} · {{ t.vehiclePlate }} · {{ t.totalSeats }} {{ 'asientos' | t }}</p>
+
+      @if (!isOwner()) {
+        @if (!reporting()) {
+          <button mat-button class="flag" (click)="reporting.set(true)"><mat-icon>flag</mat-icon> {{ 'Reportar usuario' | t }}</button>
+        } @else {
+          <form [formGroup]="reportForm" (ngSubmit)="sendReport()">
+            <mat-form-field appearance="outline">
+              <mat-label>{{ '¿Qué ocurrió?' | t }}</mat-label>
+              <textarea matInput rows="3" maxlength="500" formControlName="reason"></textarea>
+            </mat-form-field>
+            <div class="actions">
+              <button mat-stroked-button type="button" (click)="reporting.set(false)">{{ 'Cancelar' | t }}</button>
+              <button mat-flat-button type="submit" [disabled]="reportForm.invalid">{{ 'Enviar reporte' | t }}</button>
+            </div>
+          </form>
+        }
+      }
+    </mat-card>
+  </div>
+} @else {
+  <p class="empty">{{ 'Cargando viaje…' | t }}</p>
+}

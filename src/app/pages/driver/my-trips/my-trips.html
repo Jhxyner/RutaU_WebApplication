@@ -1,0 +1,71 @@
+<h1>{{ 'Mis viajes' | t }}</h1>
+<p class="sub">{{ 'Administra los viajes que publicaste y atiende a tus pasajeros.' | t }}</p>
+
+<div class="tabs">
+  <button type="button" class="tab" [class.on]="role() === 'driver'" (click)="role.set('driver')">{{ 'Como conductor' | t }}</button>
+  <button type="button" class="tab" [class.on]="role() === 'passenger'" (click)="role.set('passenger')">{{ 'Como pasajero' | t }}</button>
+</div>
+
+@if (role() === 'driver') {
+  @for (t of all(); track t.id) {
+    <mat-card class="trip">
+      <div class="top">
+        <div class="info">
+          <h2>{{ t.origin }} → {{ t.destination }}</h2>
+          <p class="meta">
+            <span>{{ fmtDate(t.departureTime) }} · {{ fmtTime(t.departureTime) }}</span>
+            <span>{{ seatsTaken(t) }} {{ 'de' | t }} {{ t.totalSeats }} {{ 'asientos ocupados' | t }}</span>
+            <strong>S/ {{ t.pricePerSeat | number: '1.2-2' }}</strong>
+          </p>
+        </div>
+        @if (isActive(t) && noRequests(t)) {
+          <app-status-badge status="NO_REQUESTS" />
+        } @else {
+          <app-status-badge [status]="t.status" />
+        }
+      </div>
+
+      @if (pending(t).length > 0) {
+        <h3>{{ 'Solicitudes pendientes (' | t }}{{ pending(t).length }})</h3>
+        @for (r of pending(t); track r.id) {
+          <div class="req">
+            <span class="avatar warm">{{ initials(r.passengerName) }}</span>
+            <div class="grow"><strong>{{ r.passengerName }}</strong><small>{{ 'Sube en' | t }} {{ r.pickupPoint ?? ('el origen' | t) }}</small></div>
+            <button mat-stroked-button (click)="reject(r)">{{ 'Rechazar' | t }}</button>
+            <button mat-flat-button (click)="accept(r)">{{ 'Aceptar' | t }}</button>
+          </div>
+        }
+      }
+      @if (accepted(t).length > 0) {
+        <h3>{{ 'Pasajeros confirmados (' | t }}{{ accepted(t).length }})</h3>
+        @for (r of accepted(t); track r.id) {
+          <div class="req">
+            <span class="avatar">{{ initials(r.passengerName) }}</span>
+            <div class="grow"><strong>{{ r.passengerName }}</strong><small>{{ 'Sube en' | t }} {{ r.pickupPoint ?? ('el origen' | t) }}</small></div>
+          </div>
+        }
+      }
+
+      @if (isActive(t)) {
+        <div class="actions">
+          <button mat-stroked-button (click)="cancel(t)">{{ 'Cancelar viaje' | t }}</button>
+          <button mat-stroked-button (click)="detail(t)">{{ 'Ver detalle' | t }}</button>
+          <button mat-flat-button (click)="complete(t)">{{ 'Marcar como realizado' | t }}</button>
+        </div>
+      }
+    </mat-card>
+  } @empty {
+    <p class="empty">{{ 'Aún no has publicado viajes.' | t }}</p>
+  }
+} @else {
+  <mat-card class="list-card">
+    @for (r of asPassenger(); track r.id) {
+      <div class="list-row">
+        <div class="grow"><strong>{{ r.origin }} → {{ r.destination }}</strong><small>{{ fmtDate(r.departureTime) }} · {{ fmtTime(r.departureTime) }} {{ '· Sube en' | t }} {{ r.pickupPoint ?? ('el origen' | t) }}</small></div>
+        <app-status-badge [status]="r.status" />
+      </div>
+    } @empty {
+      <p class="empty">{{ 'Aún no tienes viajes confirmados como pasajero.' | t }}</p>
+    }
+  </mat-card>
+}

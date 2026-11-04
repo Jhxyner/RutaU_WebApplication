@@ -1,39 +1,63 @@
-<div class="head">
-  <mat-form-field appearance="outline">
-    <mat-label>Buscar destino</mat-label>
-    <input matInput (input)="onSearch($event)" placeholder="Ej. UPC Monterrico" />
-  </mat-form-field>
-  <mat-form-field appearance="outline">
-    <mat-label>Precio máximo (S/)</mat-label>
-    <input matInput type="number" [(ngModel)]="maxPrice" />
-  </mat-form-field>
-  <button mat-stroked-button (click)="applyFilters()">Filtrar</button>
-</div>
+<h1>{{ 'Buscar viajes' | t }}</h1>
+<p class="sub">{{ 'Encuentra un viaje compartido hacia tu universidad.' | t }}</p>
+
+<mat-card class="filters">
+  <form [formGroup]="form" (ngSubmit)="search()" class="fields">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'Origen' | t }}</mat-label>
+      <input matInput formControlName="origin" [placeholder]="'Ej. Av. Primavera' | t" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'Destino' | t }}</mat-label>
+      <input matInput formControlName="destination" [placeholder]="'Ej. UPC Monterrico' | t" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'Hora de salida' | t }}</mat-label>
+      <input matInput type="time" formControlName="time" />
+    </mat-form-field>
+    <button mat-flat-button type="submit" [disabled]="loading()">{{ 'Buscar' | t }}</button>
+  </form>
+
+  <div class="chips">
+    <span class="lbl">{{ 'Filtros' | t }}</span>
+    <mat-form-field appearance="outline" class="mini">
+      <mat-label>{{ 'Zona' | t }}</mat-label>
+      <input matInput [formControl]="form.controls.zone" (change)="search()" [placeholder]="'Surco' | t" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="mini">
+      <mat-label>{{ 'Hasta S/' | t }}</mat-label>
+      <input matInput type="number" min="0" [formControl]="form.controls.maxPrice" (change)="search()" />
+    </mat-form-field>
+    <button type="button" class="tab" [class.on]="onlyFree()" (click)="toggleFree()">{{ 'Con asientos libres' | t }}</button>
+  </div>
+</mat-card>
+
+@if (alternatives().length > 0) {
+  <div class="banner">
+    <mat-icon>info</mat-icon>
+    {{ 'No hay viajes exactamente a esa hora. Te mostramos opciones con horario cercano (±15 min).' | t }}
+  </div>
+}
+
+<p class="count"><strong>{{ total() }} {{ 'viajes encontrados' | t }}</strong></p>
 
 <div class="grid">
   @for (t of paged(); track t.id) {
-    <mat-card class="trip" [class.sel]="selected()?.id === t.id" (click)="open(t)">
-      <strong>{{ t.origin }} → {{ t.destination }}</strong>
-      <span>{{ fmtDate(t.departureTime) }} · {{ fmtTime(t.departureTime) }}</span>
-      <span>{{ t.availableSeats }} asientos · S/ {{ t.pricePerSeat }}</span>
-      <span>Conductor: {{ t.driverName }}</span>
-    </mat-card>
+    <app-trip-card [trip]="t" (detail)="open(t)" />
   } @empty {
-    <p class="empty">No se encontraron viajes.</p>
+    <p class="empty">{{ 'No se encontraron viajes.' | t }}</p>
   }
 </div>
 
-<mat-paginator [length]="total()" [pageSize]="pageSize" [pageIndex]="pageIndex()" (page)="onPage($event)" />
+@if (total() > pageSize) {
+  <mat-paginator [length]="total()" [pageSize]="pageSize" [pageIndex]="pageIndex()" [hidePageSize]="true" (page)="onPage($event)" />
+}
 
-@if (selected(); as t) {
-  <mat-card class="detail">
-    <h2>{{ t.origin }} → {{ t.destination }}</h2>
-    <h3>Punto de recojo</h3>
-    @for (s of stops(); track s.id) {
-      <button mat-stroked-button [class.sel]="activeStop() === s.id" (click)="pick(s)">{{ s.address }}</button>
-    } @empty {
-      <p class="empty">Este viaje no tiene puntos intermedios; se usará el origen.</p>
+@if (alternatives().length > 0) {
+  <h2 class="alt-title">{{ 'Horarios cercanos' | t }}</h2>
+  <div class="grid">
+    @for (t of alternatives(); track t.id) {
+      <app-trip-card [trip]="t" (detail)="open(t)" />
     }
-    <button mat-flat-button [disabled]="full()" (click)="book()">Solicitar asiento</button>
-  </mat-card>
+  </div>
 }
