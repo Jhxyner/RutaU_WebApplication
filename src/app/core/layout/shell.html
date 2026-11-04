@@ -1,0 +1,48 @@
+<header class="top">
+  <button mat-icon-button class="burger" [attr.aria-label]="'Menú' | t" (click)="menuOpen.set(!menuOpen())">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <a class="brand" routerLink="/" aria-label="RutaU">
+    <span class="logo-badge">
+      <img class="logo-full" src="images/logo_horizontal.png" alt="RutaU" />
+      <img class="logo-sym" src="images/logo_symbol.png" alt="RutaU" />
+    </span>
+  </a>
+  <span class="sp"></span>
+
+  <span class="lang">
+    <button type="button" [class.on]="lang.lang() === 'es'" (click)="lang.set('es')">ES</button> |
+    <button type="button" [class.on]="lang.lang() === 'en'" (click)="lang.set('en')">EN</button>
+  </span>
+
+  @if (auth.isUser()) {
+    <a class="bell" routerLink="/cuenta/notificaciones" [attr.aria-label]="'Notificaciones' | t">
+      <mat-icon>notifications_none</mat-icon>
+      @if (notifications.unread() > 0) { <span class="count">{{ notifications.unread() }}</span> }
+    </a>
+  }
+
+  <span class="me">
+    <span class="av">{{ ini() }}</span>
+    <span class="who"><b>{{ auth.user()?.fullName }}</b><small>{{ roleLabel() | t }}</small></span>
+  </span>
+</header>
+
+<div class="body">
+  <nav class="side" [class.open]="menuOpen()">
+    @for (l of links(); track l.path) {
+      <a [routerLink]="l.path" routerLinkActive="on" (click)="menuOpen.set(false)">
+        <mat-icon>{{ l.icon }}</mat-icon>{{ l.label | t }}
+      </a>
+    }
+    <span class="sp"></span>
+    <button type="button" class="out" (click)="logout()"><mat-icon>logout</mat-icon>{{ 'Cerrar sesión' | t }}</button>
+  </nav>
+
+  <main class="content"><router-outlet /></main>
+</div>
+
+<footer class="foot">
+  <span><a href="#">{{ 'Términos de Servicio' | t }}</a> <a href="#">{{ 'Política de privacidad' | t }}</a> <a href="#">{{ 'Ayuda' | t }}</a></span>
+  <span class="copy">© 2026 <img class="wm" src="images/logo_woodmark.png" alt="RutaU" /> {{ '· Grupo 5 · Ingeniería de Software, UPC' | t }}</span>
+</footer>
