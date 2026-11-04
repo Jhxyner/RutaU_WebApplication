@@ -1,0 +1,62 @@
+<h1>{{ 'Moderación' | t }}</h1>
+<p class="sub">{{ 'Revisa los reportes de usuarios y decide una acción.' | t }}</p>
+
+<div class="tabs">
+  <button type="button" class="tab" [class.on]="filter() === 'PENDING'" (click)="setFilter('PENDING')">{{ 'Pendientes (' | t }}{{ pendingCount() }})</button>
+  <button type="button" class="tab" [class.on]="filter() === 'RESOLVED'" (click)="setFilter('RESOLVED')">{{ 'Resueltos' | t }}</button>
+  <button type="button" class="tab" [class.on]="filter() === 'DISMISSED'" (click)="setFilter('DISMISSED')">{{ 'Descartados' | t }}</button>
+  <button type="button" class="tab" [class.on]="filter() === 'ALL'" (click)="setFilter('ALL')">{{ 'Todos' | t }}</button>
+</div>
+
+<div class="cols">
+  <mat-card class="list-card">
+    @for (r of reports(); track r.id) {
+      <button type="button" class="item" [class.sel]="selected()?.id === r.id" (click)="select(r)">
+        <span class="avatar">{{ initials(r.reportedUserName) }}</span>
+        <span class="grow"><strong>{{ r.reportedUserName }}</strong><small>{{ r.reason }}</small></span>
+        <span class="when">{{ relTime(r.createdAt) }}</span>
+        <app-status-badge [status]="r.status" />
+      </button>
+    } @empty {
+      <p class="empty">{{ 'No hay reportes en esta categoría.' | t }}</p>
+    }
+  </mat-card>
+
+  <mat-card class="box">
+    @if (selected(); as r) {
+      <h2>{{ 'Reporte #' | t }}{{ r.id }}</h2>
+      <div class="who">
+        <span class="avatar">{{ initials(r.reportedUserName) }}</span>
+        <div>
+          <strong>{{ r.reportedUserName }}</strong>
+          <small>{{ 'Reportado por' | t }} {{ r.reporterName }}@if (r.reportedTripRoute) { {{ '· Viaje' | t }} {{ r.reportedTripRoute }} }</small>
+        </div>
+      </div>
+      <blockquote>«{{ r.reason }}»</blockquote>
+      <p class="when">{{ fmtDate(r.createdAt) }} · {{ fmtTime(r.createdAt) }}</p>
+      @if (r.actionTaken) { <p><b>{{ 'Acción tomada:' | t }}</b> {{ r.actionTaken }}</p> }
+
+      @if (userInfo(); as u) {
+        <div class="tiles">
+          <div><b>{{ u.totalReports }}</b><small>{{ 'reportes en total' | t }}</small></div>
+          <div><b>{{ u.validReports }}</b><small>{{ 'reportes válidos' | t }}</small></div>
+        </div>
+        <p class="when">{{ 'Estado de la cuenta:' | t }} {{ u.accountStatus }}</p>
+      }
+
+      @if (isPending()) {
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'Notas (opcional)' | t }}</mat-label>
+          <textarea matInput rows="3" [formControl]="notes"></textarea>
+        </mat-form-field>
+        <div class="actions">
+          <button mat-stroked-button [disabled]="working()" (click)="act('DISMISS')">{{ 'Descartar' | t }}</button>
+          <button mat-stroked-button [disabled]="working()" (click)="act('WARNING')">{{ 'Advertir' | t }}</button>
+          <button mat-flat-button [disabled]="working()" (click)="act('SUSPENSION')">{{ 'Suspender usuario' | t }}</button>
+        </div>
+      }
+    } @else {
+      <p class="empty">{{ 'Selecciona un reporte para ver el detalle.' | t }}</p>
+    }
+  </mat-card>
+</div>
