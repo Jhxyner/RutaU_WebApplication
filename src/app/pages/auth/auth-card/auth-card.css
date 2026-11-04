@@ -1,3 +1,29 @@
-.auth-wrap { min-height: 100vh; display: grid; place-items: center; padding: 16px; }
-.auth-card { width: 100%; max-width: 420px; padding: 24px; }
-form { display: flex; flex-direction: column; gap: 8px; }
+.auth-split { display: grid; grid-template-columns: 40% 1fr; min-height: 100vh; }
+.brand { background: var(--primary); color: #fff; display: flex; flex-direction: column; justify-content: center; gap: 16px; padding: 48px; }
+.brand h2 { color: #fff; font-size: 32px; font-weight: 700; line-height: 1.2; }
+.brand p { margin: 0; opacity: .9; max-width: 380px; }
+.logo-badge { align-self: flex-start; background: #fff; border-radius: 16px; padding: 10px 20px; }
+.logo-badge img { height: 52px; width: auto; display: block; }
+.route-mini { display: flex; align-items: center; gap: 4px; margin-top: 8px; }
+.route-mini i { width: 12px; height: 12px; border-radius: 50%; border: 2px solid #fff; box-sizing: border-box; }
+.route-mini i.fill { background: var(--sun); border-color: var(--sun); }
+.route-mini b { width: 90px; height: 2px; background: #fff; }
+
+.panel { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 32px 16px; }
+.lang { align-self: center; width: 100%; max-width: 440px; text-align: right; font-size: 12px; font-weight: 700; }
+.lang button { background: none; border: 0; font: inherit; color: var(--muted); cursor: pointer; }
+.lang button.on { color: var(--ink); }
+.auth-card { width: 100%; max-width: 440px; padding: 32px; box-sizing: border-box; }
+form { display: flex; flex-direction: column; gap: 4px; }
+form button[type='submit'] { height: 48px; margin-top: 12px; }
+.legal { display: flex; gap: 20px; width: 100%; max-width: 440px; font-size: 12px; font-weight: 600; }
+.legal a { text-decoration: none; }
+
+@media (max-width: 800px) {
+  .auth-split { grid-template-columns: 1fr; }
+  .brand { padding: 24px; gap: 8px; }
+  .brand h2 { font-size: 22px; }
+  .brand p, .route-mini { display: none; }
+  .logo-badge img { height: 36px; }
+  .auth-card { padding: 20px; }
+}

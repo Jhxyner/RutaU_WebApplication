@@ -1,1 +1,10 @@
-.alt { text-align: center; margin-top: 16px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+.two > * { min-width: 0; }
+.lbl { font-weight: 700; font-size: 13px; margin: 8px 0 8px; }
+.usage { display: flex; gap: 8px; margin-bottom: 12px; }
+.usage .tab { flex: 1; border-radius: 12px; padding: 12px 8px; }
+.err { display: block; margin: -8px 0 8px; }
+mat-checkbox { display: block; margin-bottom: 4px; line-height: 1.4; }
+.alt { text-align: center; margin: 16px 0 0; color: var(--muted); }
+.alt a { font-weight: 700; text-decoration: none; }
+@media (max-width: 500px) { .two { grid-template-columns: 1fr; } }

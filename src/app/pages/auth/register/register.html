@@ -1,35 +1,57 @@
 <app-auth-card
-  title="Crear cuenta"
-  submitLabel="Registrarme"
+  [title]="'Crear cuenta' | t"
+  [subtitle]="'Solo para estudiantes con correo institucional.' | t"
+  [submitLabel]="'Crear cuenta' | t"
   [form]="form"
   [loading]="loading()"
   (submitForm)="submit()">
   <ng-container [formGroup]="form">
-    <mat-form-field>
-      <mat-label>Nombre completo</mat-label>
-      <input matInput formControlName="fullName" />
+    <div class="two">
+      <mat-form-field appearance="outline" subscriptSizing="fixed">
+        <mat-label>{{ 'Nombres' | t }}</mat-label>
+        <input matInput formControlName="names" autocomplete="given-name" />
+        <mat-error>{{ 'Obligatorio' | t }}</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" subscriptSizing="fixed">
+        <mat-label>{{ 'Apellidos' | t }}</mat-label>
+        <input matInput formControlName="lastNames" autocomplete="family-name" />
+        <mat-error>{{ 'Obligatorio' | t }}</mat-error>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" subscriptSizing="fixed">
+      <mat-label>{{ 'Correo universitario' | t }}</mat-label>
+      <input matInput type="email" formControlName="email" autocomplete="username" />
+      <mat-hint>{{ 'Debe terminar en .edu.pe' | t }}</mat-hint>
+      @if (form.controls.email.hasError('pattern')) { <mat-error>{{ 'Debe terminar en .edu.pe' | t }}</mat-error> }
+      @else if (form.controls.email.hasError('email')) { <mat-error>{{ 'Correo no válido' | t }}</mat-error> }
+      @else { <mat-error>{{ 'Obligatorio' | t }}</mat-error> }
     </mat-form-field>
-    <mat-form-field>
-      <mat-label>Usuario</mat-label>
-      <input matInput formControlName="name" />
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Correo institucional</mat-label>
-      <input matInput type="email" formControlName="email" />
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Contraseña</mat-label>
-      <input matInput type="password" formControlName="password" />
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Universidad</mat-label>
-      <input matInput formControlName="university" />
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Distrito</mat-label>
-      <input matInput formControlName="district" />
-    </mat-form-field>
-    <mat-checkbox formControlName="acceptTerms">Acepto los Términos de Servicio</mat-checkbox>
+
+    <div class="two">
+      <mat-form-field appearance="outline" subscriptSizing="fixed">
+        <mat-label>{{ 'Contraseña' | t }}</mat-label>
+        <input matInput type="password" formControlName="password" autocomplete="new-password" />
+        <mat-hint>{{ 'Mínimo 8 caracteres' | t }}</mat-hint>
+        <mat-error>{{ 'Mínimo 8 caracteres' | t }}</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" subscriptSizing="fixed">
+        <mat-label>{{ 'Confirmar' | t }}</mat-label>
+        <input matInput type="password" formControlName="confirm" autocomplete="new-password" />
+      </mat-form-field>
+    </div>
+    @if (form.hasError('mismatch') && form.controls.confirm.touched) {
+      <small class="err">{{ 'Las contraseñas no coinciden' | t }}</small>
+    }
+
+    <p class="lbl">{{ '¿Cómo usarás RutaU?' | t }}</p>
+    <div class="usage">
+      <button type="button" class="tab" [class.on]="usage() === 'passenger'" (click)="usage.set('passenger')">{{ 'Pasajero' | t }}</button>
+      <button type="button" class="tab" [class.on]="usage() === 'driver'" (click)="usage.set('driver')">{{ 'Conductor' | t }}</button>
+      <button type="button" class="tab" [class.on]="usage() === 'both'" (click)="usage.set('both')">{{ 'Ambos' | t }}</button>
+    </div>
+
+    <mat-checkbox formControlName="acceptTerms">{{ 'Acepto los Términos de Servicio y la Política de privacidad.' | t }}</mat-checkbox>
   </ng-container>
-  <p class="alt" footer>¿Ya tienes cuenta? <a routerLink="/login">Iniciar sesión</a></p>
+  <p class="alt" footer>{{ '¿Ya tienes cuenta?' | t }} <a routerLink="/login">{{ 'Iniciar sesión' | t }}</a></p>
 </app-auth-card>
