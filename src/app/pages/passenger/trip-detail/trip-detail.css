@@ -1,0 +1,24 @@
+.crumbs { color: var(--muted); font-size: 13px; margin: 0 0 8px; }
+.crumbs a { font-weight: 700; text-decoration: none; }
+.box { padding: 24px; }
+.head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
+.timeline { list-style: none; margin: 0 0 20px; padding: 0 0 0 28px; position: relative; display: flex; flex-direction: column; gap: 16px; }
+.timeline::before { content: ''; position: absolute; left: 7px; top: 8px; bottom: 8px; width: 2px; background: var(--primary); }
+.timeline li { position: relative; display: flex; flex-direction: column; gap: 3px; }
+.timeline li::before { content: ''; position: absolute; left: -28px; top: 3px; width: 14px; height: 14px; border-radius: 50%; box-sizing: border-box; background: var(--primary); }
+.timeline li.first::before { background: #fff; border: 2px solid var(--primary); }
+.timeline li.last::before { background: var(--secondary); }
+.timeline small, .tiles small, .hint { color: var(--muted); font-size: 12px; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.tiles > div { background: var(--surface); border-radius: 12px; padding: 12px 16px; display: flex; flex-direction: column; gap: 4px; }
+.tiles.two { grid-template-columns: 1fr 1fr; margin: 12px 0; }
+.big { font: 800 24px var(--font-title); }
+.options { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+.opt { text-align: left; padding: 12px 16px; border: 1px solid var(--line); background: #fff; border-radius: 12px; font: 600 14px var(--font-body); cursor: pointer; }
+.opt.sel { border: 2px solid var(--primary); background: var(--primary-soft); }
+.actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 12px; }
+.who { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.avatar.big { width: 56px; height: 56px; font-size: 18px; }
+.verified { display: inline-block; background: var(--primary-soft); color: var(--primary); font-size: 12px; font-weight: 700; border-radius: 999px; padding: 4px 12px; }
+.car { color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+.flag { color: var(--error) !important; }
