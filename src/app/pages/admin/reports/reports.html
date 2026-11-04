@@ -1,0 +1,50 @@
+<h1>{{ 'Reportes de demanda' | t }}</h1>
+<p class="sub">{{ 'Dónde y cuándo los estudiantes buscan viaje.' | t }}</p>
+
+<div class="filters">
+  <mat-form-field appearance="outline" class="period">
+    <mat-label>{{ 'Periodo' | t }}</mat-label>
+    <mat-select [value]="period()" (selectionChange)="setPeriod($event.value)">
+      @for (p of periods; track p.days) { <mat-option [value]="p.days">{{ p.label | t }}</mat-option> }
+    </mat-select>
+  </mat-form-field>
+  <button mat-stroked-button type="button" (click)="export('xlsx')">{{ 'Exportar Excel' | t }}</button>
+  <button mat-stroked-button type="button" (click)="export('pdf')">{{ 'Exportar PDF' | t }}</button>
+</div>
+
+@if (report(); as r) {
+  <div class="kpis">
+    <mat-card class="kpi"><small>{{ 'Solicitudes' | t }}</small><b>{{ r.totalRequests }}</b><span>{{ r.from }} {{ 'a' | t }} {{ r.to }}</span></mat-card>
+    <mat-card class="kpi"><small>{{ 'Ruta más pedida' | t }}</small><b class="txt">{{ topRoute()?.label ?? '—' }}</b><span>{{ topRoute()?.requests ?? 0 }} {{ 'solicitudes' | t }}</span></mat-card>
+    <mat-card class="kpi"><small>{{ 'Hora pico' | t }}</small><b class="txt">{{ topHour()?.label ?? '—' }}</b><span>{{ topHour()?.requests ?? 0 }} {{ 'solicitudes' | t }}</span></mat-card>
+    <mat-card class="kpi"><small>{{ 'Rutas con demanda' | t }}</small><b>{{ r.topRoutes.length }}</b><span>{{ 'en el periodo' | t }}</span></mat-card>
+  </div>
+
+  @if (r.totalRequests === 0) {
+    <p class="empty">{{ r.message }}</p>
+  } @else {
+    <div class="panels">
+      <mat-card class="box">
+        <h2>{{ 'Horas pico' | t }}</h2>
+        @for (x of r.topHours; track x.label) {
+          <div class="bar-row"><span class="lbl">{{ x.label }}</span><div class="bar"><i [style.width.%]="pct(x, maxHour())"></i></div><b>{{ x.requests }}</b></div>
+        }
+      </mat-card>
+
+      <mat-card class="box">
+        <h2>{{ 'Rutas más pedidas' | t }}</h2>
+        <div class="thead"><span>{{ 'Ruta' | t }}</span><span>{{ 'Solicit.' | t }}</span></div>
+        @for (x of r.topRoutes; track x.label) {
+          <div class="trow"><strong>{{ x.label }}</strong><span>{{ x.requests }}</span></div>
+        }
+      </mat-card>
+    </div>
+
+    <mat-card class="box wide">
+      <h2>{{ 'Evolución (' | t }}{{ r.groupedBy }})</h2>
+      @for (x of r.timeline; track x.label) {
+        <div class="bar-row"><span class="lbl">{{ x.label }}</span><div class="bar"><i [style.width.%]="pct(x, maxTime())"></i></div><b>{{ x.requests }}</b></div>
+      }
+    </mat-card>
+  }
+}

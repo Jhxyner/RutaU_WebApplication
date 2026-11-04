@@ -1,0 +1,30 @@
+<h1>{{ 'Mis solicitudes' | t }}</h1>
+<p class="sub">{{ 'Sigue el estado de los asientos que pediste.' | t }}</p>
+
+<div class="tabs">
+  <button type="button" class="tab" [class.on]="filter() === 'all'" (click)="filter.set('all')">{{ 'Todas (' | t }}{{ items().length }})</button>
+  <button type="button" class="tab" [class.on]="filter() === 'pending'" (click)="filter.set('pending')">{{ 'Pendientes (' | t }}{{ pending().length }})</button>
+  <button type="button" class="tab" [class.on]="filter() === 'accepted'" (click)="filter.set('accepted')">{{ 'Aceptadas (' | t }}{{ accepted().length }})</button>
+  <button type="button" class="tab" [class.on]="filter() === 'closed'" (click)="filter.set('closed')">{{ 'Cerradas (' | t }}{{ closed().length }})</button>
+</div>
+
+<mat-card class="list-card">
+  @for (r of shown(); track r.id) {
+    <div class="list-row">
+      <span class="avatar">{{ initials(r.passengerName) }}</span>
+      <div class="grow">
+        <strong>{{ r.origin }} → {{ r.destination }}</strong>
+        <small>{{ fmtDate(r.departureTime) }} · {{ fmtTime(r.departureTime) }} {{ '· Recojo:' | t }} {{ r.pickupPoint ?? ('En el origen' | t) }}</small>
+      </div>
+      <app-status-badge [status]="r.status" />
+      @if (r.status === 'PENDING' || r.status === 'ACCEPTED') {
+        <button mat-stroked-button (click)="cancel(r)">{{ 'Cancelar' | t }}</button>
+      }
+      @if (r.status === 'ACCEPTED') {
+        <button mat-flat-button (click)="view(r)">{{ 'Ver viaje' | t }}</button>
+      }
+    </div>
+  } @empty {
+    <p class="empty">{{ 'No tienes solicitudes en esta categoría.' | t }}</p>
+  }
+</mat-card>

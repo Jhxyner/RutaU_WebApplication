@@ -1,0 +1,29 @@
+<h1>{{ 'Notificaciones' | t }}</h1>
+<p class="sub">{{ 'Novedades de tus solicitudes y viajes.' | t }}</p>
+
+<div class="bar">
+  <div class="tabs">
+    <button type="button" class="tab" [class.on]="tab() === 'all'" (click)="tab.set('all')">{{ 'Todas' | t }}</button>
+    <button type="button" class="tab" [class.on]="tab() === 'unread'" (click)="tab.set('unread')">{{ 'No leídas (' | t }}{{ unread().length }})</button>
+  </div>
+  @if (unread().length > 0) {
+    <button mat-button (click)="readAll()">{{ 'Marcar todas como leídas' | t }}</button>
+  }
+</div>
+
+<mat-card class="list-card">
+  @for (n of shown(); track n.id) {
+    <button type="button" class="nrow" [class.unread]="!n.read" (click)="open(n)">
+      <span class="dot" [class.on]="!n.read"></span>
+      <span class="ico {{ kind(n.type).tone }}"><mat-icon>{{ kind(n.type).icon }}</mat-icon></span>
+      <span class="txt">
+        <strong>{{ kind(n.type).title | t }}</strong>
+        <span>{{ n.message }}</span>
+      </span>
+      <span class="when">{{ relTime(n.createdAt) }}</span>
+      @if (target(n.type)) { <mat-icon class="go">chevron_right</mat-icon> }
+    </button>
+  } @empty {
+    <p class="empty">{{ 'No tienes notificaciones.' | t }}</p>
+  }
+</mat-card>

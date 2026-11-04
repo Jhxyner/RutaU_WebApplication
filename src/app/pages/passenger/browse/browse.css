@@ -1,6 +1,10 @@
-.head { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin: 16px 0; }
-.trip { padding: 16px; cursor: pointer; display: flex; flex-direction: column; gap: 4px; }
-.trip.sel { outline: 2px solid currentColor; }
-.detail { padding: 16px; margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
-.sel { font-weight: bold; }
+.filters { padding: 20px; margin-bottom: 8px; }
+.fields { display: grid; grid-template-columns: 1fr 1fr 180px auto; gap: 12px; align-items: start; }
+.fields button { height: 56px; padding: 0 28px; }
+.chips { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-top: 4px; }
+.lbl { font-weight: 700; font-size: 13px; color: var(--muted); }
+.mini { width: 140px; }
+.count { margin: 16px 0 8px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+.alt-title { margin: 24px 0 12px; }
+@media (max-width: 900px) { .fields { grid-template-columns: 1fr; } .fields button { height: 48px; } }

@@ -1,0 +1,73 @@
+<h1>{{ 'Historial y calificaciones' | t }}</h1>
+<p class="sub">{{ 'Revisa tus viajes pasados y califica a quienes viajaron contigo.' | t }}</p>
+
+<div class="tabs">
+  <button type="button" class="tab" [class.on]="tab() === 'done'" (click)="tab.set('done')">{{ 'Viajes' | t }}</button>
+  <button type="button" class="tab" [class.on]="tab() === 'received'" (click)="tab.set('received')">{{ 'Recibidas' | t }}</button>
+</div>
+
+<div class="cols">
+  <div class="stack">
+    @if (tab() === 'done') {
+      @if (latest(); as l) {
+        <mat-card class="prompt accent">
+          <span class="avatar">{{ initials(l.otherParty) }}</span>
+          <div class="grow">
+            <h2>{{ 'Califica tu viaje con' | t }} {{ l.otherParty }}</h2>
+            <small>{{ l.origin }} → {{ l.destination }} · {{ fmtDate(l.departureTime) }}</small>
+          </div>
+          <button mat-flat-button (click)="rate(l)">{{ 'Calificar' | t }}</button>
+        </mat-card>
+      }
+
+      <mat-card class="list-card">
+        @for (i of done(); track i.tripId + i.role) {
+          <div class="list-row">
+            <span class="avatar">{{ initials(i.otherParty) }}</span>
+            <div class="grow">
+              <strong>{{ i.origin }} → {{ i.destination }}</strong>
+              <small>{{ i.otherParty }} · {{ fmtDate(i.departureTime) }} · {{ fmtTime(i.departureTime) }}</small>
+            </div>
+            @if (i.status === 'COMPLETED') {
+              <button mat-stroked-button (click)="rate(i)">{{ 'Calificar' | t }}</button>
+            } @else {
+              <span class="none">{{ 'Sin calificar' | t }}</span>
+            }
+            <app-status-badge [status]="i.status" />
+          </div>
+        } @empty {
+          <p class="empty">{{ history()?.message ?? ('Aún no tienes viajes realizados.' | t) }}</p>
+        }
+      </mat-card>
+    } @else {
+      <mat-card class="list-card">
+        @for (x of received()?.ratings ?? []; track x.id) {
+          <div class="list-row">
+            <span class="avatar">{{ initials(x.raterName) }}</span>
+            <div class="grow">
+              <strong>{{ x.raterName }}</strong>
+              <small>{{ fmtDate(x.createdAt) }} · {{ x.ratedRole === 'DRIVER' ? ('Como conductor' | t) : ('Como pasajero' | t) }}</small>
+              @if (x.comment) { <small>«{{ x.comment }}»</small> }
+            </div>
+            <span class="stars-txt" [attr.aria-label]="x.score + ' / 5'">{{ stars(x.score) }}</span>
+          </div>
+        } @empty {
+          <p class="empty">{{ received()?.message ?? ('Aún no has recibido calificaciones.' | t) }}</p>
+        }
+      </mat-card>
+    }
+  </div>
+
+  <mat-card class="rep">
+    <h2>{{ 'Mi reputación' | t }}</h2>
+    <div class="score">
+      <b class="big">{{ average() !== null ? (average() | number: '1.1-1') : '—' }}</b>
+      @if (average() !== null) { <span class="stars-txt">{{ stars(average() ?? 0) }}</span> }
+    </div>
+    <p class="muted">{{ 'Promedio de' | t }} {{ received()?.total ?? 0 }} {{ 'calificaciones recibidas' | t }}</p>
+    <div class="tiles">
+      <div><b>{{ completed().length }}</b><small>{{ 'viajes' | t }}</small></div>
+      <div><b>{{ received()?.total ?? 0 }}</b><small>{{ 'calificaciones' | t }}</small></div>
+    </div>
+  </mat-card>
+</div>

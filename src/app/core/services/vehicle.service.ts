@@ -1,14 +1,22 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { API_URL } from '../api';
+import { environment } from '../../../environments/environment';
 import { Vehicle, VehicleBody } from '../model/vehicle.model';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class VehicleService {
   private readonly http = inject(HttpClient);
-  private readonly api = `${API_URL}/vehicles`;
+  private readonly api = `${environment.apiUrl}/vehicles`;
 
-  findMine() { return this.http.get<Vehicle>(`${this.api}/me`); }
-  create(body: VehicleBody) { return this.http.post<Vehicle>(this.api, body); }
-  update(body: VehicleBody) { return this.http.put<Vehicle>(`${this.api}/me`, body); }
+  findMine() {
+    return this.http.get<Vehicle>(`${this.api}/me`);
+  }
+
+  create(body: VehicleBody) {
+    return this.http.post<Vehicle>(this.api, body);
+  }
+
+  update(body: VehicleBody) {
+    return this.http.put<Vehicle>(`${this.api}/me`, body);
+  }
 }

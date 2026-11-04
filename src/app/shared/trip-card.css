@@ -1,0 +1,7 @@
+.card { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+.who { display: flex; align-items: center; gap: 12px; }
+.who strong, .who small { display: block; }
+.who small { color: var(--muted); margin-top: 3px; }
+.meta { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; color: var(--muted); font-size: 13px; }
+.meta strong { color: var(--ink); margin-left: auto; }
+.actions { display: flex; justify-content: flex-end; gap: 8px; }
