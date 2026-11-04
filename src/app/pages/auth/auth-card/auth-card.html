@@ -1,10 +1,29 @@
-<div class="auth-wrap">
-  <mat-card class="auth-card">
-    <h1>{{ title() }}</h1>
-    <form [formGroup]="form()" (ngSubmit)="submitForm.emit()">
-      <ng-content />
-      <button mat-flat-button type="submit" [disabled]="loading()">{{ submitLabel() }}</button>
-    </form>
-    <ng-content select="[footer]" />
-  </mat-card>
+<div class="auth-split">
+  <aside class="brand">
+    <span class="logo-badge"><img src="images/logo_horizontal.png" alt="RutaU" /></span>
+    <h2>{{ 'Tu camino a la universidad, compartido.' | t }}</h2>
+    <p>{{ 'Viaja con estudiantes verificados de tu universidad y comparte los gastos de cada ruta.' | t }}</p>
+    <div class="route-mini"><i></i><b></b><i class="fill"></i></div>
+  </aside>
+
+  <section class="panel">
+    <div class="lang">
+      <button type="button" [class.on]="lang.lang() === 'es'" (click)="lang.set('es')">ES</button> |
+      <button type="button" [class.on]="lang.lang() === 'en'" (click)="lang.set('en')">EN</button>
+    </div>
+
+    <mat-card class="auth-card">
+      <h1>{{ title() }}</h1>
+      @if (subtitle()) { <p class="sub">{{ subtitle() }}</p> }
+
+      <form [formGroup]="form()" (ngSubmit)="submitForm.emit()">
+        <ng-content />
+        <button mat-flat-button type="submit" [disabled]="loading()">{{ submitLabel() }}</button>
+      </form>
+
+      <ng-content select="[footer]" />
+    </mat-card>
+
+    <nav class="legal"><a href="#">{{ 'Términos de Servicio' | t }}</a><a href="#">{{ 'Política de privacidad' | t }}</a></nav>
+  </section>
 </div>
