@@ -1,1 +1,2 @@
-.alt { text-align: center; margin-top: 16px; }
+.alt { text-align: center; margin: 16px 0 0; color: var(--muted); }
+.alt a { font-weight: 700; text-decoration: none; }

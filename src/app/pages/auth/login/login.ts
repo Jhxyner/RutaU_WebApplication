@@ -1,17 +1,16 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../../core/services/auth.service';
 import { AuthCard } from '../auth-card/auth-card';
+import { TPipe, tr } from '../../../core/i18n';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, RouterLink, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, AuthCard],
+  imports: [TPipe, ReactiveFormsModule, RouterLink, MatFormFieldModule, MatInputModule, AuthCard],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -29,18 +28,21 @@ export class Login {
   });
 
   submit() {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
     this.loading.set(true);
     this.auth.login(this.form.getRawValue()).subscribe({
       next: () => this.router.navigate([this.home()]),
       error: (e) => {
-        this.snack.open(e.error?.message ?? 'No se pudo iniciar sesión', 'Cerrar', { duration: 4000 });
+        this.snack.open(e.error?.message ?? tr('No se pudo iniciar sesión'), tr('Cerrar'), { duration: 4000 });
         this.loading.set(false);
       },
     });
   }
 
   private home() {
-    return this.auth.isAdmin() ? '/admin/reportes' : '/viajes';
+    return this.auth.isAdmin() ? '/admin/reportes' : '/pasajero/viajes';
   }
 }
