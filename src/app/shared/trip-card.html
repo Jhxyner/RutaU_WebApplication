@@ -1,0 +1,24 @@
+<mat-card class="card">
+  <div class="who">
+    <span class="avatar">{{ ini() }}</span>
+    <div>
+      <strong>{{ trip().driverName }}</strong>
+      <small>{{ trip().vehicleBrand }} {{ trip().vehicleModel }} · {{ trip().zone }}</small>
+    </div>
+  </div>
+
+  <app-route-line [origin]="trip().origin" [destination]="trip().destination" />
+
+  <div class="meta">
+    <span>{{ when() }}</span>
+    <span>{{ trip().availableSeats }} {{ 'asientos' | t }}</span>
+    <strong>S/ {{ trip().pricePerSeat | number: '1.2-2' }}</strong>
+  </div>
+
+  <div class="actions">
+    <button mat-button (click)="detail.emit()">{{ 'Ver detalle' | t }}</button>
+    <button mat-flat-button [disabled]="soldOut()" (click)="detail.emit()">
+      {{ soldOut() ? ('Sin asientos' | t) : ('Solicitar asiento' | t) }}
+    </button>
+  </div>
+</mat-card>
