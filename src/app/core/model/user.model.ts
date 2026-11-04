@@ -24,3 +24,14 @@ export interface RegisterRequest {
 }
 
 export interface AuthResponse { token: string; tokenType: string; user: User; }
+
+export interface PublicProfile {
+  id: number;
+  fullName: string;
+  university: string;
+  avatarUrl: string | null;
+  averageRating: number | null;
+  ratingLabel: string;
+  totalRatings: number;
+  completedTrips: number;
+}
