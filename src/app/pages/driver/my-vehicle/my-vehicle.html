@@ -1,24 +1,60 @@
-<mat-card class="box">
-  <h1>Mi vehículo</h1>
+<h1>{{ 'Mi vehículo' | t }}</h1>
+<p class="sub">{{ 'Los pasajeros ven estos datos antes de solicitar un asiento.' | t }}</p>
 
+<div class="two" [class.single]="!vehicle()">
   @if (vehicle(); as v) {
-    <p>{{ v.brand }} {{ v.model }} · {{ v.color }} · {{ v.plate }} · {{ v.capacity }} asientos</p>
-    @if (editingId() === null) {
-      <button mat-stroked-button (click)="edit(v)">Editar</button>
-    }
+    <mat-card class="car">
+      <div class="head">
+        <span class="tile"><mat-icon>directions_car</mat-icon></span>
+        <div class="name">
+          <h2>{{ v.brand }} {{ v.model }}</h2>
+          <small>{{ v.color || '—' }}</small>
+        </div>
+      </div>
+      <div class="plate">{{ v.plate }}</div>
+      <div class="stat"><small>{{ 'Asientos' | t }}</small><b>{{ v.capacity }}</b></div>
+    </mat-card>
   }
 
-  @if (!vehicle() || editingId() !== null) {
+  <mat-card class="box">
+    <h2>{{ vehicle() ? ('Editar vehículo' | t) : ('Registrar vehículo' | t) }}</h2>
     <form [formGroup]="form" (ngSubmit)="save()">
-      <mat-form-field><mat-label>Marca</mat-label><input matInput formControlName="brand" /></mat-form-field>
-      <mat-form-field><mat-label>Modelo</mat-label><input matInput formControlName="model" /></mat-form-field>
-      <mat-form-field><mat-label>Color</mat-label><input matInput formControlName="color" /></mat-form-field>
-      <mat-form-field><mat-label>Placa</mat-label><input matInput formControlName="plate" /></mat-form-field>
-      <mat-form-field><mat-label>Asientos para pasajeros</mat-label><input matInput type="number" formControlName="capacity" /></mat-form-field>
-      <button mat-flat-button type="submit">{{ editingId() ? 'Guardar cambios' : 'Registrar vehículo' }}</button>
-      @if (editingId() !== null) {
-        <button mat-button type="button" (click)="cancel()">Cancelar</button>
-      }
+      <div class="row">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'Marca' | t }}</mat-label>
+          <input matInput formControlName="brand" />
+          @if (form.controls.brand.hasError('required')) { <mat-error>{{ 'La marca es obligatoria' | t }}</mat-error> }
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'Modelo' | t }}</mat-label>
+          <input matInput formControlName="model" />
+          @if (form.controls.model.hasError('required')) { <mat-error>{{ 'El modelo es obligatorio' | t }}</mat-error> }
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'Color' | t }}</mat-label>
+          <input matInput formControlName="color" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'Placa' | t }}</mat-label>
+          <input matInput formControlName="plate" [placeholder]="'ABC-123' | t" />
+          <mat-hint>{{ 'Formato: ABC-123' | t }}</mat-hint>
+          @if (form.controls.plate.hasError('required')) { <mat-error>{{ 'La placa es obligatoria' | t }}</mat-error> }
+          @else if (form.controls.plate.hasError('pattern')) { <mat-error>{{ 'Formato inválido (ej. ABC-123)' | t }}</mat-error> }
+        </mat-form-field>
+      </div>
+      <mat-form-field appearance="outline" class="short">
+        <mat-label>{{ 'Asientos para pasajeros' | t }}</mat-label>
+        <input matInput type="number" min="1" max="8" formControlName="capacity" />
+        <mat-hint>{{ 'No incluye al conductor' | t }}</mat-hint>
+        @if (form.controls.capacity.invalid) { <mat-error>{{ 'Entre 1 y 8' | t }}</mat-error> }
+      </mat-form-field>
+
+      <div class="actions">
+        <button mat-stroked-button type="button" (click)="discard()">{{ 'Descartar' | t }}</button>
+        <button mat-flat-button type="submit" [disabled]="saving()">{{ vehicle() ? ('Guardar cambios' | t) : ('Registrar vehículo' | t) }}</button>
+      </div>
     </form>
-  }
-</mat-card>
+  </mat-card>
+</div>
