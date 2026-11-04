@@ -1,3 +1,5 @@
+import { SeatRequest } from './seat-request.model';
+
 export type TripStatus = 'SCHEDULED' | 'FULL' | 'COMPLETED' | 'CANCELLED';
 
 export interface TripStop {
@@ -25,6 +27,8 @@ export interface Trip {
   stops: TripStop[];
 }
 
+export interface TripStopBody { address: string; zone: string; }
+
 export interface TripBody {
   origin: string;
   destination: string;
@@ -32,6 +36,16 @@ export interface TripBody {
   departureTime: string;
   seats: number;
   pricePerSeat: number;
+  stops: TripStopBody[];
+}
+
+export interface TripFilters {
+  origin?: string;
+  destination?: string;
+  from?: string;      // HH:mm
+  to?: string;        // HH:mm
+  zone?: string;
+  maxPrice?: number | null;
 }
 
 export interface TripSearchResponse {
@@ -39,4 +53,16 @@ export interface TripSearchResponse {
   totalResults: number;
   results: Trip[];
   alternatives: Trip[];
+}
+
+export interface CompleteTripBody {
+  confirmEarly?: boolean;
+  completedRequestIds?: number[];
+}
+
+export interface TripCompletion {
+  tripId: number;
+  status: TripStatus;
+  message: string;
+  passengers: SeatRequest[];
 }
