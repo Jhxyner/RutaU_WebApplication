@@ -1,0 +1,21 @@
+.filters { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; }
+.filters button { height: 56px; }
+.period { width: 240px; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin: 8px 0 20px; }
+.kpi { padding: 20px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.kpi small { color: var(--muted); }
+.kpi b { font: 800 40px/1.1 var(--font-title); }
+.kpi b.txt { font-size: 22px; line-height: 1.3; overflow-wrap: anywhere; }
+.kpi span { color: var(--success); font-size: 13px; font-weight: 600; }
+.panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-bottom: 20px; }
+.box { padding: 24px; min-width: 0; }
+.box h2 { margin-bottom: 16px; }
+.bar-row { display: grid; grid-template-columns: minmax(70px, 160px) minmax(0, 1fr) 36px; gap: 12px; align-items: center; margin: 12px 0; }
+.lbl { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar { height: 12px; border-radius: 6px; background: #E8EDEF; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--primary); border-radius: 6px; }
+.bar-row b { text-align: right; }
+.thead, .trow { display: grid; grid-template-columns: minmax(0, 1fr) 80px; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.thead { color: var(--muted); font-size: 13px; font-weight: 700; padding-top: 0; }
+.thead span:last-child, .trow span { text-align: right; }
+.trow strong { overflow-wrap: anywhere; }
